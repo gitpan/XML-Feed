@@ -8,17 +8,16 @@ use Feed::Find;
 use URI::Fetch;
 use Carp;
 
-our $VERSION = '0.12';
+our $VERSION = '0.20';
 
 sub new {
     my $class = shift;
-    my($format) = @_;
-    $format ||= 'Atom';
+    my $format = shift || 'Atom';
     my $format_class = 'XML::Feed::' . $format;
     eval "use $format_class";
     Carp::croak("Unsupported format $format: $@") if $@;
     my $feed = bless {}, join('::', __PACKAGE__, $format);
-    $feed->init_empty or return $class->error($feed->errstr);
+    $feed->init_empty(@_) or return $class->error($feed->errstr);
     $feed;
 }
 
@@ -26,7 +25,7 @@ sub init_empty { 1 }
 
 sub parse {
     my $class = shift;
-    my($stream) = @_;
+    my($stream, $specified_format) = @_;
     return $class->error("Stream parameter is required") unless $stream;
     my $feed = bless {}, $class;
     my $xml = '';
@@ -52,8 +51,13 @@ sub parse {
     }
     return $class->error("Can't get feed XML content from $stream")
         unless $xml;
-    my $format = $feed->identify_format(\$xml)
-        or return $class->error($feed->errstr);
+    my $format;
+    if ($specified_format) {
+        $format = $specified_format;
+    } else {
+        $format = $feed->identify_format(\$xml) or return $class->error($feed->errstr);
+    }
+
     my $format_class = join '::', __PACKAGE__, $format;
     eval "use $format_class";
     return $class->error("Unsupported format $format: $@") if $@;
@@ -190,6 +194,8 @@ Creates a new empty I<XML::Feed> object using the format I<$format>.
 
 =head2 XML::Feed->parse($stream)
 
+=head2 XML::Feed->parse($stream, $format)
+
 Parses a syndication feed identified by I<$stream>. I<$stream> can be any
 one of the following:
 
@@ -212,6 +218,8 @@ The name of a file containing the feed XML.
 A URI from which the feed XML will be retrieved.
 
 =back
+
+C<$format> allows you to override format guessing.
 
 =head2 XML::Feed->find_feeds($uri)
 
@@ -310,7 +318,13 @@ under the same terms as Perl itself.
 
 =head1 AUTHOR & COPYRIGHT
 
-Except where otherwise noted, I<XML::Feed> is Copyright 2004-2005
+Except where otherwise noted, I<XML::Feed> is Copyright 2004-2008
 Six Apart, cpan@sixapart.com. All rights reserved.
+
+=head1 SUBVERSION 
+
+The latest version of I<XML::Feed> can be found at
+
+    http://code.sixapart.com/svn/XML-Feed/trunk/
 
 =cut

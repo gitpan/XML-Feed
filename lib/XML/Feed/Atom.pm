@@ -10,8 +10,10 @@ use List::Util qw( first );
 use DateTime::Format::W3CDTF;
 
 sub init_empty {
-    my $feed = shift;
-    $feed->{atom} = XML::Atom::Feed->new(Version => 1.0);
+    my ($feed, %args) = @_;
+    $args{'Version'} ||= '1.0';
+    
+    $feed->{atom} = XML::Atom::Feed->new(%args);
     $feed;
 }
 
@@ -42,6 +44,9 @@ sub description { shift->{atom}->tagline(@_) }
 sub copyright   { shift->{atom}->copyright(@_) }
 sub language    { shift->{atom}->language(@_) }
 sub generator   { shift->{atom}->generator(@_) }
+sub id          { shift->{atom}->id(@_) }
+sub updated     { shift->{atom}->updated(@_) }
+sub add_link    { shift->{atom}->add_link(@_) }
 
 sub author {
     my $feed = shift;
@@ -59,7 +64,9 @@ sub modified {
     if (@_) {
         $feed->{atom}->modified(DateTime::Format::W3CDTF->format_datetime($_[0]));
     } else {
-        $feed->{atom}->modified ? iso2dt($feed->{atom}->modified) : undef;
+        return iso2dt($feed->{atom}->modified) if $feed->{atom}->modified;
+        return iso2dt($feed->{atom}->updated)  if $feed->{atom}->updated;
+        return undef;
     }
 }
 
@@ -96,6 +103,9 @@ sub init_empty {
 }
 
 sub title { shift->{entry}->title(@_) }
+sub source { shift->{entry}->source(@_) }
+sub updated { shift->{entry}->updated(@_) }
+
 sub link {
     my $entry = shift;
     if (@_) {
@@ -110,20 +120,46 @@ sub link {
 sub summary {
     my $entry = shift;
     if (@_) {
-        $entry->{entry}->summary(ref($_[0]) eq 'XML::Feed::Content' ?
-            $_[0]->body : $_[0]);
+		my %param;
+		if (ref($_[0]) eq 'XML::Feed::Content') {
+			%param = (Body => $_[0]->body);
+		} else {
+			 %param = (Body => $_[0]);
+		}
+		$entry->{entry}->summary(XML::Atom::Content->new(%param, Version => 1.0));
     } else {
-        XML::Feed::Content->wrap({ type => 'html',
-                                   body => $entry->{entry}->summary });
+		my $s = $entry->{entry}->summary;
+        # map Atom types to MIME types
+        my $type = ($s && ref($s) eq 'XML::Feed::Content') ? $s->type : undef;
+        if ($type) {
+            $type = 'text/html'  if $type eq 'xhtml' || $type eq 'html';
+            $type = 'text/plain' if $type eq 'text';
+        }
+		my $body = $s;	
+		if (defined $s && ref($s) eq 'XML::Feed::Content') {
+			$body = $s->body;
+		}
+        XML::Feed::Content->wrap({ type => $type,
+                                   body => $body });
     }
 }
+
+my %types = (
+	'text/xhtml' => 'xhtml',
+	'text/html'  => 'html',
+	'text/plain' => 'text',
+);
 
 sub content {
     my $entry = shift;
     if (@_) {
         my %param;
         if (ref($_[0]) eq 'XML::Feed::Content') {
-            %param = (Body => $_[0]->body);
+			if (defined $_[0]->type && defined $types{$_[0]->type}) {
+	            %param = (Body => $_[0]->body, Type => $types{$_[0]->type});
+			} else {
+	            %param = (Body => $_[0]->body);
+			}
         } else {
             %param = (Body => $_[0]);
         }
@@ -150,7 +186,8 @@ sub category {
         $entry->{entry}->add_category({ term => $_[0] });
     } else {
         my $category = $entry->{entry}->category;
-        $category ? ($category->label || $category->term) : $entry->{entry}->get($ns, 'subject');
+        my @return = $category ? ($category->label || $category->term) : $entry->{entry}->getlist($ns, 'subject');
+        return wantarray? @return : $return[0];
     }
 }
 
@@ -181,7 +218,9 @@ sub modified {
     if (@_) {
         $entry->{entry}->modified(DateTime::Format::W3CDTF->format_datetime($_[0])) if $_[0];
     } else {
-        $entry->{entry}->modified ? iso2dt($entry->{entry}->modified) : undef;
+        return iso2dt($entry->{entry}->modified) if $entry->{entry}->modified;
+        return iso2dt($entry->{entry}->updated)  if $entry->{entry}->updated;
+        return undef;
     }
 }
 
