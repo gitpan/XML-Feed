@@ -1,6 +1,26 @@
-# $Id: Changes 67 2008-10-15 18:11:12Z swistow $
+# $Id: Changes 74 2008-10-22 20:46:18Z swistow $
 
 Revision history for XML::Feed
+
+0.22 2008-10-22
+    - Correct namespace for terms in RSS
+      http://rt.cpan.org/Ticket/Display.html?id=25393
+      (Kent Cowgill KCOWGILL)
+    - Up the minimum requirement for XML::RSS to 1.31
+      http://rt.cpan.org/Ticket/Display.html?id=23588
+      (Andreas König ANDK)    
+    - Created test for
+      http://rt.cpan.org/Ticket/Display.html?id=18810
+      (Ryan Tate)
+    - Allow creation of a self link
+      http://rt.cpan.org/Ticket/Display.html?id=39924
+      (Shlomi Fish SHLOMIF)
+    - Add support for GEORSS
+      http://rt.cpan.org/Ticket/Display.html?id=39924
+      (Scott Gifford GIFF)
+    - Fix fetching through proxies
+      http://rt.cpan.org/Ticket/Display.html?id=36233
+      (Trevor Vallender)
 
 0.21 2008.10.15
     - Remove the inc directory because it's not needed anymore

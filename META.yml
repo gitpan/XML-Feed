@@ -1,6 +1,6 @@
 ---
 name: XML-Feed
-version: 0.21
+version: 0.22
 author: []
 abstract: XML Syndication Feed Support
 license: perl
@@ -19,11 +19,11 @@ requires:
   URI::Fetch: 0
   XML::Atom: 0.23
   XML::LibXML: 1.66
-  XML::RSS: 1.01
+  XML::RSS: 1.31
 provides:
   XML::Feed:
     file: lib/XML/Feed.pm
-    version: 0.21
+    version: 0.22
   XML::Feed::Atom:
     file: lib/XML/Feed/Atom.pm
   XML::Feed::Content:

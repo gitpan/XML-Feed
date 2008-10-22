@@ -15,7 +15,9 @@ sub init_empty {
     eval "use $PREFERRED_PARSER"; die $@ if $@;
     $feed->{rss} = $PREFERRED_PARSER->new(%args);
     $feed->{rss}->add_module(prefix => "content", uri => 'http://purl.org/rss/1.0/modules/content/');
-    $feed->{rss}->add_module(prefix => "dcterms", uri => 'http://purl.org/rss/1.0/modules/dcterms/');
+    $feed->{rss}->add_module(prefix => "dcterms", uri => 'http://purl.org/dc/terms/');    
+    $feed->{rss}->add_module(prefix => "atom", uri => 'http://www.w3.org/2005/Atom');
+    $feed->{rss}->add_module(prefix => "geo", uri => 'http://www.w3.org/2003/01/geo/wgs84_pos#');
     $feed;
 }
 
@@ -36,6 +38,9 @@ sub title       { shift->{rss}->channel('title', @_) }
 sub link        { shift->{rss}->channel('link', @_) }
 sub description { shift->{rss}->channel('description', @_) }
 
+# This doesn't exist in RSS
+sub id          { }
+
 ## This is RSS 2.0 only--what's the equivalent in RSS 1.0?
 sub copyright   { shift->{rss}->channel('copyright', @_) }
 
@@ -50,6 +55,24 @@ sub language {
         $feed->{rss}->channel->{dc}{language};
     }
 }
+
+sub self_link {
+    my $feed = shift;
+
+    if (@_) {
+        my $uri = shift;
+
+        $feed->{rss}->channel->{'atom'}{'link'} =
+        {
+            rel => "self",
+            href => $uri,
+            type => "application/rss+xml",
+        };
+    }
+
+    return $feed->{rss}->channel->{'atom'}{'link'};
+}
+
 
 sub generator {
     my $feed = shift;
@@ -109,6 +132,7 @@ sub entries {
 sub add_entry {
     my $feed = shift;
     my($entry) = @_;
+    use Data::Dumper;
     $feed->{rss}->add_item(%{ $entry->unwrap });
 }
 
@@ -242,5 +266,24 @@ sub modified {
         }
     }
 }
+
+sub lat {
+    my $item = shift->{entry};
+    if (@_) {
+   $item->{geo}{lat} = $_[0];
+    } else {
+   return $item->{geo}{lat};
+    }
+}
+
+sub long {
+    my $item = shift->{entry};
+    if (@_) {
+   $item->{geo}{long} = $_[0];
+    } else {
+   return $item->{geo}{long};
+    }
+}
+
 
 1;

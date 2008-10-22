@@ -6,9 +6,10 @@ use strict;
 use base qw( Class::ErrorHandler );
 use Feed::Find;
 use URI::Fetch;
+use LWP::UserAgent;
 use Carp;
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 sub new {
     my $class = shift;
@@ -30,7 +31,9 @@ sub parse {
     my $feed = bless {}, $class;
     my $xml = '';
     if (UNIVERSAL::isa($stream, 'URI')) {
-        my $res = URI::Fetch->fetch($stream)
+        my $ua  = LWP::UserAgent->new;
+        $ua->env_proxy; # force allowing of proxies
+        my $res = URI::Fetch->fetch($stream, UserAgent => $ua)
             or return $class->error(URI::Fetch->errstr);
         return $class->error("This feed has been permanently removed")
             if $res->status == URI::Fetch::URI_GONE();
@@ -124,6 +127,7 @@ sub splice {
 sub format;
 sub title;
 sub link;
+sub self_link;
 sub description;
 sub language;
 sub author;
@@ -133,6 +137,7 @@ sub generator;
 sub add_entry;
 sub entries;
 sub as_xml;
+sub id;
 
 sub tagline { shift->description(@_) }
 sub items   { $_[0]->entries     }
@@ -191,6 +196,10 @@ I<DateTime> objects, which it then returns to the caller.
 =head2 XML::Feed->new($format)
 
 Creates a new empty I<XML::Feed> object using the format I<$format>.
+
+    $feed = XML::Feed->new('Atom');
+    $feed = XML::Feed->new('RSS');
+    $feed = XML::Feed->new('RSS', version => '0.91');
 
 =head2 XML::Feed->parse($stream)
 
@@ -279,6 +288,14 @@ If present, I<$modified> should be a I<DateTime> object.
 =head2 $feed->generator([ $generator ])
 
 The generator of the feed.
+
+=head2 $feed->self_link ([ $uri ])
+
+The Atom Self-link of the feed:
+
+L<http://validator.w3.org/feed/docs/warning/MissingAtomSelfLink.html>
+
+A string.
 
 =head2 $feed->entries
 
