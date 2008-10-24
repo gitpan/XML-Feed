@@ -44,6 +44,15 @@ sub id          { }
 ## This is RSS 2.0 only--what's the equivalent in RSS 1.0?
 sub copyright   { shift->{rss}->channel('copyright', @_) }
 
+sub base {
+    my $feed = shift;
+    if (@_) {
+        $feed->{rss}->{'xml:base'} = $_[0];
+    } else {
+        $feed->{rss}->{'xml:base'};
+    }
+}
+
 ## The following all work transparently in any RSS version.
 sub language {
     my $feed = shift;
@@ -130,9 +139,9 @@ sub entries {
 }
 
 sub add_entry {
-    my $feed = shift;
-    my($entry) = @_;
-    use Data::Dumper;
+    my $feed  = shift;
+    my $entry = shift || return;
+    $entry    = $feed->_convert_entry($entry);
     $feed->{rss}->add_item(%{ $entry->unwrap });
 }
 
@@ -146,6 +155,11 @@ use XML::Feed::Content;
 use base qw( XML::Feed::Entry );
 
 sub init_empty { $_[0]->{entry} = { } }
+
+sub base {
+    my $entry = shift;
+    @_ ? $entry->{entry}->{'xml:base'} = $_[0] : $entry->{entry}->{'xml:base'};
+}
 
 sub title {
     my $entry = shift;
@@ -194,14 +208,28 @@ sub summary {
 sub content {
     my $item = shift->{entry};
     if (@_) {
-        my $c = ref($_[0]) eq 'XML::Feed::Content' ? $_[0]->body : $_[0];
+        my $c;
+        if (ref($_[0]) eq 'XML::Feed::Content') {
+            if (defined $_[0]->base) {
+                $c = { 'content' => $_[0]->body, 'xml:base' => $_[0]->base };
+            } else {
+                $c = $_[0]->body;
+            }
+        } else {
+            $c = $_[0];
+        }
         $item->{content}{encoded} = $c;
     } else {
+        my $base;
         my $body =
             $item->{content}{encoded} ||
             $item->{'http://www.w3.org/1999/xhtml'}{body} ||
             $item->{description};
-        XML::Feed::Content->wrap({ type => 'text/html', body => $body });
+        if ('HASH' eq ref($body)) {
+            $base = $body->{'xml:base'};
+            $body = $body->{content};
+        }
+        XML::Feed::Content->wrap({ type => 'text/html', body => $body, base => $base });
     }
 }
 

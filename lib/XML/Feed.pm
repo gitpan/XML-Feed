@@ -9,7 +9,7 @@ use URI::Fetch;
 use LWP::UserAgent;
 use Carp;
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 sub new {
     my $class = shift;
@@ -124,6 +124,16 @@ sub splice {
     }
 }
 
+sub _convert_entry {
+    my $feed   = shift;
+    my $entry  = shift;
+    my $feed_format  = ref($feed);   $feed_format  =~ s!^XML::Feed::!!;
+    my $entry_format = ref($entry);  $entry_format =~ s!^XML::Feed::Entry::!!;
+    return $entry if $entry_format eq $feed_format;
+    return $entry->convert($feed_format); 
+}
+
+sub base;
 sub format;
 sub title;
 sub link;
@@ -254,6 +264,10 @@ Returns the format of the feed (C<Atom>, or some version of C<RSS>).
 =head2 $feed->title([ $title ])
 
 The title of the feed/channel.
+
+=head2 $feed->base([ $base ])
+
+The url base of the feed/channel.
 
 =head2 $feed->link([ $uri ])
 
