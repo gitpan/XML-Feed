@@ -8,16 +8,23 @@ use Feed::Find;
 use URI::Fetch;
 use LWP::UserAgent;
 use Carp;
+use Module::Pluggable search_path => "XML::Feed::Format",
+                      require     => 1,
+                      sub_name    => 'formatters';
 
-our $VERSION = '0.23';
+our $VERSION = '0.3';
+our @formatters;
+BEGIN {
+	@formatters = __PACKAGE__->formatters;
+}
 
 sub new {
     my $class = shift;
     my $format = shift || 'Atom';
-    my $format_class = 'XML::Feed::' . $format;
+    my $format_class = 'XML::Feed::Format::' . $format;
     eval "use $format_class";
     Carp::croak("Unsupported format $format: $@") if $@;
-    my $feed = bless {}, join('::', __PACKAGE__, $format);
+    my $feed = bless {}, join('::', __PACKAGE__, "Format", $format);
     $feed->init_empty(@_) or return $class->error($feed->errstr);
     $feed;
 }
@@ -61,7 +68,7 @@ sub parse {
         $format = $feed->identify_format(\$xml) or return $class->error($feed->errstr);
     }
 
-    my $format_class = join '::', __PACKAGE__, $format;
+    my $format_class = join '::', __PACKAGE__, "Format", $format;
     eval "use $format_class";
     return $class->error("Unsupported format $format: $@") if $@;
     bless $feed, $format_class;
@@ -70,8 +77,23 @@ sub parse {
 }
 
 sub identify_format {
-    my $feed = shift;
-    my($xml) = @_;
+    my $feed   = shift;
+    my($xml)   = @_;
+	foreach my $class (@formatters) {
+		my ($name) = ($class =~ m!([^:]+)$!);
+		# TODO ugly
+		my $tmp = $$xml;
+		return $name if eval { $class->identify(\$tmp) };
+		return $feed->error($@) if $@;
+	} 
+	return $feed->error("Cannot detect feed type");
+}
+
+sub _get_first_tag {
+	my $class  = shift;
+	my ($xml)  = @_;
+
+
     ## Auto-detect feed type based on first element. This is prone
     ## to breakage, but then again we don't want to parse the whole
     ## feed ourselves.
@@ -81,15 +103,9 @@ sub identify_format {
         my $first = substr $t, 0, 1;
         $tag = $t, last unless $first eq '?' || $first eq '!';
     }
-    return $feed->error("Cannot find first element") unless $tag;
+	die ("Cannot find first element") unless $tag;
     $tag =~ s/^.*://;
-    if ($tag eq 'rss' || $tag eq 'RDF') {
-        return 'RSS';
-    } elsif ($tag eq 'feed') {
-        return 'Atom';
-    } else {
-        return $feed->error("Cannot detect feed type");
-    }
+	return $tag;
 }
 
 sub find_feeds {
@@ -103,7 +119,7 @@ sub find_feeds {
 sub convert {
     my $feed = shift;
     my($format) = @_;
-    my $new = __PACKAGE__->new($format);
+    my $new = XML::Feed->new($format);
     for my $field (qw( title link description language author copyright modified generator )) {
         my $val = $feed->$field();
         next unless defined $val;
@@ -127,8 +143,8 @@ sub splice {
 sub _convert_entry {
     my $feed   = shift;
     my $entry  = shift;
-    my $feed_format  = ref($feed);   $feed_format  =~ s!^XML::Feed::!!;
-    my $entry_format = ref($entry);  $entry_format =~ s!^XML::Feed::Entry::!!;
+    my $feed_format  = ref($feed);   $feed_format  =~ s!^XML::Feed::Format::!!;
+    my $entry_format = ref($entry);  $entry_format =~ s!^XML::Feed::Entry::Format::!!;
     return $entry if $entry_format eq $feed_format;
     return $entry->convert($feed_format); 
 }
@@ -238,7 +254,7 @@ A URI from which the feed XML will be retrieved.
 
 =back
 
-C<$format> allows you to override format guessing.
+I<$format> allows you to override format guessing.
 
 =head2 XML::Feed->find_feeds($uri)
 
@@ -246,6 +262,10 @@ Given a URI I<$uri>, use auto-discovery to find all of the feeds linked
 from that page (using I<E<lt>linkE<gt>> tags).
 
 Returns a list of feed URIs.
+
+=head2 XML::Feed->identify_format($xml)
+
+Given the xml of a feed return what format it is in (C<Atom>, or some version of C<RSS>).
 
 =head2 $feed->convert($format)
 
@@ -316,6 +336,10 @@ A string.
 A list of the entries/items in the feed. Returns an array containing
 I<XML::Feed::Entry> objects.
 
+=head2 $feed->items
+
+A synonym for I<$feed->entries>.
+
 =head2 $feed->add_entry($entry)
 
 Adds an entry to the feed. I<$entry> should be an I<XML::Feed::Entry>
@@ -341,6 +365,46 @@ package.
 B<Note:> this will only work for parsing feeds, not creating feeds.
 
 =back
+
+=head1 VALID FEEDS
+
+For reference, this cgi script will create valid, albeit nonsensical feeds 
+(according to C<http://feedvalidator.org> anyway) for Atom 1.0 and RSS 0.90, 
+0.91, 1.0 and 2.0. 
+
+    #!perl -w
+
+    use strict;
+    use CGI;
+    use CGI::Carp qw(fatalsToBrowser);
+    use DateTime;
+    use XML::Feed;
+
+    my $cgi  = CGI->new;
+    my @args = ( $cgi->param('format') || "Atom" );
+    push @args, ( version => $cgi->param('version') ) if $cgi->param('version');
+
+    my $feed = XML::Feed->new(@args);
+    $feed->id("http://".time.rand()."/");
+    $feed->title('Test Feed');
+    $feed->link($cgi->url);
+    $feed->self_link($cgi->url( -query => 1, -full => 1, -rewrite => 1) );
+    $feed->modified(DateTime->now);
+
+    my $entry = XML::Feed::Entry->new();
+    $entry->id("http://".time.rand()."/");
+    $entry->link("http://example.com");
+    $entry->title("Test entry");
+    $entry->summary("Test summary");
+    $entry->content("Foo");
+    $entry->modified(DateTime->now);
+    $entry->author('test@example.com (Testy McTesterson)');
+    $feed->add_entry($entry);
+
+    my $mime = ("Atom" eq $feed->format) ? "application/atom+xml" : "application/rss+xml";
+    print $cgi->header($mime);
+    print $feed->as_xml;
+
 
 =head1 LICENSE
 

@@ -1,6 +1,6 @@
 # $Id: RSS.pm 1934 2006-04-22 05:13:55Z btrott $
 
-package XML::Feed::RSS;
+package XML::Feed::Format::RSS;
 use strict;
 
 use base qw( XML::Feed );
@@ -8,6 +8,14 @@ use DateTime::Format::Mail;
 use DateTime::Format::W3CDTF;
 
 our $PREFERRED_PARSER = "XML::RSS";
+
+
+sub identify {
+    my $class   = shift;
+    my $xml     = shift;
+    my $tag     = $class->_get_first_tag($xml);
+    return ($tag eq 'rss' || $tag eq 'RDF');
+}
 
 sub init_empty {
     my ($feed, %args) = @_;
@@ -133,7 +141,7 @@ sub entries {
     my $rss = $_[0]->{rss};
     my @entries;
     for my $item (@{ $rss->{items} }) {
-        push @entries, XML::Feed::Entry::RSS->wrap($item);
+        push @entries, XML::Feed::Entry::Format::RSS->wrap($item);
     }
     @entries;
 }
@@ -147,7 +155,7 @@ sub add_entry {
 
 sub as_xml { $_[0]->{rss}->as_string }
 
-package XML::Feed::Entry::RSS;
+package XML::Feed::Entry::Format::RSS;
 use strict;
 
 use XML::Feed::Content;
@@ -298,18 +306,18 @@ sub modified {
 sub lat {
     my $item = shift->{entry};
     if (@_) {
-   $item->{geo}{lat} = $_[0];
+        $item->{geo}{lat} = $_[0];
     } else {
-   return $item->{geo}{lat};
+        return $item->{geo}{lat};
     }
 }
 
 sub long {
     my $item = shift->{entry};
     if (@_) {
-   $item->{geo}{long} = $_[0];
+        $item->{geo}{long} = $_[0];
     } else {
-   return $item->{geo}{long};
+         return $item->{geo}{long};
     }
 }
 

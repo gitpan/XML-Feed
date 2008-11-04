@@ -1,6 +1,6 @@
 ---
 name: XML-Feed
-version: 0.23
+version: 0.3
 author: []
 abstract: XML Syndication Feed Support
 license: perl
@@ -15,6 +15,7 @@ requires:
   HTML::TokeParser: 0
   LWP::UserAgent: 0
   List::Util: 0
+  Module::Pluggable: 0
   Test::More: 0
   URI::Fetch: 0
   XML::Atom: 0.23
@@ -23,19 +24,19 @@ requires:
 provides:
   XML::Feed:
     file: lib/XML/Feed.pm
-    version: 0.23
-  XML::Feed::Atom:
-    file: lib/XML/Feed/Atom.pm
+    version: 0.3
   XML::Feed::Content:
     file: lib/XML/Feed/Content.pm
   XML::Feed::Entry:
     file: lib/XML/Feed/Entry.pm
-  XML::Feed::Entry::Atom:
-    file: lib/XML/Feed/Atom.pm
-  XML::Feed::Entry::RSS:
-    file: lib/XML/Feed/RSS.pm
-  XML::Feed::RSS:
-    file: lib/XML/Feed/RSS.pm
+  XML::Feed::Entry::Format::Atom:
+    file: lib/XML/Feed/Format/Atom.pm
+  XML::Feed::Entry::Format::RSS:
+    file: lib/XML/Feed/Format/RSS.pm
+  XML::Feed::Format::Atom:
+    file: lib/XML/Feed/Format/Atom.pm
+  XML::Feed::Format::RSS:
+    file: lib/XML/Feed/Format/RSS.pm
 generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

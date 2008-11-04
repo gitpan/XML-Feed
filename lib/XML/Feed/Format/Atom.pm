@@ -1,6 +1,6 @@
 # $Id: Atom.pm 1958 2006-08-14 05:31:27Z btrott $
 
-package XML::Feed::Atom;
+package XML::Feed::Format::Atom;
 use strict;
 
 use base qw( XML::Feed );
@@ -13,6 +13,14 @@ use XML::Atom::Entry;
 XML::Atom::Entry->mk_elem_accessors(qw( lat long ), ['http://www.w3.org/2003/01/geo/wgs84_pos#']);
 
 use XML::Atom::Content;
+
+sub identify {
+    my $class   = shift;
+    my $xml     = shift;
+    my $tag     = $class->_get_first_tag($xml);
+    return ($tag eq 'feed');
+}
+
 
 sub init_empty {
     my ($feed, %args) = @_;
@@ -127,7 +135,7 @@ sub modified {
 sub entries {
     my @entries;
     for my $entry ($_[0]->{atom}->entries) {
-        push @entries, XML::Feed::Entry::Atom->wrap($entry);
+        push @entries, XML::Feed::Entry::Format::Atom->wrap($entry);
     }
 
     @entries;
@@ -142,7 +150,7 @@ sub add_entry {
 
 sub as_xml { $_[0]->{atom}->as_xml }
 
-package XML::Feed::Entry::Atom;
+package XML::Feed::Entry::Format::Atom;
 use strict;
 
 use base qw( XML::Feed::Entry );

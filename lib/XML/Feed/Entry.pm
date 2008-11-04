@@ -20,10 +20,10 @@ sub new {
     my $class = shift;
     my($format) = @_;
     $format ||= 'Atom';
-    my $format_class = 'XML::Feed::' . $format;
+    my $format_class = 'XML::Feed::Format::' . $format;
     eval "use $format_class";
     Carp::croak("Unsupported format $format: $@") if $@;
-    my $entry = bless {}, join('::', __PACKAGE__, $format);
+    my $entry = bless {}, join('::', __PACKAGE__, "Format", $format);
     $entry->init_empty or return $class->error($entry->errstr);
     $entry;
 }
@@ -146,6 +146,14 @@ If present, I<$issued> should be a I<DateTime> object.
 A I<DateTime> object representing the last-modified date of the entry.
 
 If present, I<$modified> should be a I<DateTime> object.
+
+=head2 $entry->wrap
+
+Take an entry in its native format and turn it into an I<XML::Feed::Entry> object.
+
+=head2 $entry->unwrap
+
+Take an I<XML::Feed::Entry> object and turn it into its native format.
 
 =head1 AUTHOR & COPYRIGHT
 
