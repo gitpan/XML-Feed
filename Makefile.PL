@@ -16,9 +16,9 @@ WriteMakefile
                            'Module::Pluggable' => '0',
                            'Test::More' => '0',
                            'URI::Fetch' => '0',
-                           'XML::Atom' => '0.23',
+                           'XML::Atom' => '0.32',
                            'XML::LibXML' => '1.66',
-                           'XML::RSS' => '1.31'
+                           'XML::RSS' => '1.37'
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],

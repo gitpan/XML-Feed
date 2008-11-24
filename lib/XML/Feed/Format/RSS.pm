@@ -34,7 +34,7 @@ sub init_string {
     my($str) = @_;
     $feed->init_empty;
     if ($str) {
-        $feed->{rss}->parse($$str);
+        $feed->{rss}->parse($$str, { hashrefs_instead_of_strings => 1 } );
     }
     $feed;
 }
@@ -142,6 +142,7 @@ sub entries {
     my @entries;
     for my $item (@{ $rss->{items} }) {
         push @entries, XML::Feed::Entry::Format::RSS->wrap($item);
+		$entries[-1]->{_version} = $rss->{'version'};		
     }
     @entries;
 }
@@ -157,6 +158,8 @@ sub as_xml { $_[0]->{rss}->as_string }
 
 package XML::Feed::Entry::Format::RSS;
 use strict;
+
+sub format { 'RSS ' . $_[0]->{'_version'} }
 
 use XML::Feed::Content;
 

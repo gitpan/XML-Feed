@@ -1,0 +1,30 @@
+# $Id: Build.PL 110 2008-11-24 00:43:50Z swistow $
+use Module::Build;
+
+my $build = Module::Build
+  ->new( module_name   => "XML::Feed",
+         dist_abstract => "XML Syndication Feed Support", 
+         license       => 'perl',
+         script_files  => [ ],
+         requires      => {
+                          'Class::ErrorHandler'        => 0,
+                          'DateTime'                   => 0,
+                          'DateTime::Format::Mail'     => 0,
+                          'DateTime::Format::W3CDTF'   => 0,
+                          'Feed::Find'                 => 0,
+                          'HTML::TokeParser'           => 0,
+                          'List::Util'                 => 0,
+                          'LWP::UserAgent'             => 0,
+                          'Module::Pluggable'          => 0,
+                          'URI::Fetch'                 => 0,
+                          'XML::Atom'                  => 0.32,
+                          'XML::LibXML'                => 1.66,
+                          'XML::RSS'                   => 1.37,
+                          'Test::More'                 => 0,
+                        },
+         create_makefile_pl => 'traditional',
+       );
+
+$build->create_build_script;
+
+
