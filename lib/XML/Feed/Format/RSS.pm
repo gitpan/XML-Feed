@@ -1,4 +1,4 @@
-# $Id: RSS.pm 1934 2006-04-22 05:13:55Z btrott $
+# $Id: RSS.pm 117 2008-12-09 23:48:16Z swistow $
 
 package XML::Feed::Format::RSS;
 use strict;
@@ -245,11 +245,16 @@ sub content {
 }
 
 sub category {
-    my $item = shift->{entry};
+    my $entry = shift;
+    my $item  = $entry->{entry};
     if (@_) {
-        $item->{category} = $item->{dc}{subject} = $_[0];
+        my @tmp = ($entry->category, @_);
+        $item->{category}    = [@tmp];
+        $item->{dc}{subject} = [@tmp];
     } else {
-        $item->{category} || $item->{dc}{subject};
+        my $r = $item->{category} || $item->{dc}{subject};
+        my @r = ref($r)? @$r : defined $r? ($r) : ();
+        return wantarray? @r : $r[0];
     }
 }
 

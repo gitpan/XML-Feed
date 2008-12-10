@@ -18,7 +18,7 @@ WriteMakefile
                            'URI::Fetch' => '0',
                            'XML::Atom' => '0.32',
                            'XML::LibXML' => '1.66',
-                           'XML::RSS' => '1.37'
+                           'XML::RSS' => '1.40'
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],

@@ -1,4 +1,4 @@
-$Id: README 1925 2006-03-03 17:37:50Z btrott $
+$Id: README 115 2008-12-01 21:17:51Z swistow $
 
 This is XML::Feed, an abstraction above the RSS and Atom syndication
 feed formats. It supports both parsing and autodiscovery of feeds.

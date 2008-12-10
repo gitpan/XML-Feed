@@ -1,4 +1,4 @@
-# $Id$
+# $Id: 08-convert-summary-bug.t 115 2008-12-01 21:17:51Z swistow $
 
 use strict;
 use Test::More tests => 1;

@@ -1,4 +1,4 @@
-# $Id: Entry.pm 1872 2005-08-12 04:28:42Z btrott $
+# $Id: Entry.pm 118 2008-12-10 20:15:44Z swistow $
 
 package XML::Feed::Entry;
 use strict;
@@ -55,6 +55,7 @@ sub modified;
 sub lat;
 sub long;
 sub format;
+sub tags { shift->category(@_) }
 
 1;
 __END__
@@ -126,6 +127,16 @@ an I<XML::Feed::Content> object with an empty string in the I<body>.
 =head2 $entry->category([ $category ])
 
 The category in which the entry was posted.
+
+Returns a list of categories if called in array context or the first
+category if called in scalar context.
+
+B<WARNING> It's possible this API might change to have an 
+I<add_category> instead.
+
+=head2 $entry->tags([ $tag ])
+
+A synonym for I<category>;
 
 =head2 $entry->author([ $author ])
 

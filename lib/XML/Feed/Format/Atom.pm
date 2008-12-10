@@ -1,4 +1,4 @@
-# $Id: Atom.pm 1958 2006-08-14 05:31:27Z btrott $
+# $Id: Atom.pm 116 2008-12-09 23:39:29Z swistow $
 
 package XML::Feed::Format::Atom;
 use strict;
@@ -228,10 +228,16 @@ sub category {
     my $entry = shift;
     my $ns = XML::Atom::Namespace->new(dc => 'http://purl.org/dc/elements/1.1/');
     if (@_) {
-        $entry->{entry}->add_category({ term => $_[0] });
+        $entry->{entry}->add_category({ term => $_ }) for @_;
+        return 1
     } else {
-        my $category = $entry->{entry}->category;
-        my @return = $category ? ($category->label || $category->term) : $entry->{entry}->getlist($ns, 'subject');
+
+
+        my @category = ($entry->{entry}->can('categories')) ? $entry->{entry}->categories : $entry->{entry}->category;
+        my @return = @category
+            ? (map { $_->label || $_->term } @category)
+            : $entry->{entry}->getlist($ns, 'subject');
+
         return wantarray? @return : $return[0];
     }
 }

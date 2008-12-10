@@ -1,6 +1,12 @@
-# $Id: Changes 109 2008-11-21 20:41:06Z swistow $
+# $Id: Changes 118 2008-12-10 20:15:44Z swistow $
 
 Revision history for XML::Feed
+
+0.41
+    - Add handling for multiple categories/tags, including
+      patch from Shlomi Fish (SHLOMIF)
+      http://rt.cpan.org/Ticket/Display.html?id=41396
+    - Force v1.40 of XML::RSS to get proper multiple category support
 
 0.40 
     - Force v1.37 of XML::RSS to get proper xml:base support
