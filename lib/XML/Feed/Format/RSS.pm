@@ -1,4 +1,4 @@
-# $Id: RSS.pm 117 2008-12-09 23:48:16Z swistow $
+# $Id: RSS.pm 145 2009-04-03 15:07:25Z swistow $
 
 package XML::Feed::Format::RSS;
 use strict;
@@ -253,7 +253,7 @@ sub category {
         $item->{dc}{subject} = [@tmp];
     } else {
         my $r = $item->{category} || $item->{dc}{subject};
-        my @r = ref($r)? @$r : defined $r? ($r) : ();
+        my @r = ref($r) eq 'ARRAY' ? @$r : defined $r? ($r) : ();
         return wantarray? @r : $r[0];
     }
 }
@@ -329,5 +329,19 @@ sub long {
     }
 }
 
+sub enclosure {
+    my $entry  = shift;
+
+    if (@_) {
+        my $enclosure = shift;
+        $entry->{entry}->{enclosure} = {
+                 url    => $enclosure->{url},
+                 type   => $enclosure->{type},
+                 length => $enclosure->{length}
+            };
+    } else {
+        return XML::Feed::Enclosure->new($entry->{entry}->{enclosure});
+    }
+}
 
 1;

@@ -1,4 +1,4 @@
-# $Id: Entry.pm 118 2008-12-10 20:15:44Z swistow $
+# $Id: Entry.pm 145 2009-04-03 15:07:25Z swistow $
 
 package XML::Feed::Entry;
 use strict;
@@ -56,6 +56,7 @@ sub lat;
 sub long;
 sub format;
 sub tags { shift->category(@_) }
+sub enclosure;
 
 1;
 __END__

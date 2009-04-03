@@ -1,6 +1,15 @@
-# $Id: Changes 118 2008-12-10 20:15:44Z swistow $
+# $Id: Changes 148 2009-04-03 15:16:38Z swistow $
 
 Revision history for XML::Feed
+
+0.42
+    - Fix conversion of multi value fields
+      http://rt.cpan.org/Ticket/Display.html?id=41794 
+      (Mario Domgoergen)
+
+    - Fixed a bug where $e->category fails when XML::RSS::LibXML is preferred.
+      (Tatsuhiko Miyagawa)
+    - Added support for enclosures
 
 0.41
     - Add handling for multiple categories/tags, including

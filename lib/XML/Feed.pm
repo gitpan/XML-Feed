@@ -1,4 +1,4 @@
-# $Id: Feed.pm 118 2008-12-10 20:15:44Z swistow $
+# $Id: Feed.pm 147 2009-04-03 15:16:10Z swistow $
 
 package XML::Feed;
 use strict;
@@ -12,7 +12,7 @@ use Module::Pluggable search_path => "XML::Feed::Format",
                       require     => 1,
                       sub_name    => 'formatters';
 
-our $VERSION = '0.41';
+our $VERSION = '0.42';
 our @formatters;
 BEGIN {
 	@formatters = __PACKAGE__->formatters;
@@ -363,6 +363,8 @@ package.
     $XML::Feed::RSS::PREFERRED_PARSER = "XML::RSS::LibXML";
 
 B<Note:> this will only work for parsing feeds, not creating feeds.
+
+B<Note:> Only C<XML::RSS::LibXML> version 0.3004 is known to work at the moment.
 
 =back
 
