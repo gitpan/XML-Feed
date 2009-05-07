@@ -1,4 +1,4 @@
-# $Id: Feed.pm 147 2009-04-03 15:16:10Z swistow $
+# $Id: Feed.pm 150 2009-05-07 00:47:58Z swistow $
 
 package XML::Feed;
 use strict;
@@ -12,7 +12,8 @@ use Module::Pluggable search_path => "XML::Feed::Format",
                       require     => 1,
                       sub_name    => 'formatters';
 
-our $VERSION = '0.42';
+our $VERSION = '0.43';
+our $MULTIPLE_ENCLOSURES = 0;
 our @formatters;
 BEGIN {
 	@formatters = __PACKAGE__->formatters;
@@ -366,7 +367,20 @@ B<Note:> this will only work for parsing feeds, not creating feeds.
 
 B<Note:> Only C<XML::RSS::LibXML> version 0.3004 is known to work at the moment.
 
+=item C<$XML::Feed::MULTIPLE_ENCLOSURES>
+
+Although the RSS specification states that there can be at most one enclosure per item 
+some feeds break this rule.
+
+If this variable is set then C<XML::Feed> captures all of them and makes them available as a list.
+
+Otherwise it returns the last enclosure parsed.
+
+B<Note:> C<XML::RSS> version 1.44 is needed for this to work.
+
 =back
+
+=cut
 
 =head1 VALID FEEDS
 

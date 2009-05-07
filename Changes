@@ -1,6 +1,9 @@
-# $Id: Changes 148 2009-04-03 15:16:38Z swistow $
+# $Id: Changes 150 2009-05-07 00:47:58Z swistow $
 
 Revision history for XML::Feed
+
+0.43  
+    - Add optional multi enclosure support
 
 0.42
     - Fix conversion of multi value fields

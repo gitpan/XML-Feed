@@ -1,4 +1,4 @@
-# $Id: RSS.pm 145 2009-04-03 15:07:25Z swistow $
+# $Id: RSS.pm 150 2009-05-07 00:47:58Z swistow $
 
 package XML::Feed::Format::RSS;
 use strict;
@@ -33,8 +33,12 @@ sub init_string {
     my $feed = shift;
     my($str) = @_;
     $feed->init_empty;
+    my $opts = {
+         hashrefs_instead_of_strings => 1,
+    };
+    $opts->{allow_multiple} = [ 'enclosure' ] if $XML::Feed::MULTIPLE_ENCLOSURES;
     if ($str) {
-        $feed->{rss}->parse($$str, { hashrefs_instead_of_strings => 1 } );
+        $feed->{rss}->parse($$str, $opts );
     }
     $feed;
 }
@@ -334,13 +338,20 @@ sub enclosure {
 
     if (@_) {
         my $enclosure = shift;
-        $entry->{entry}->{enclosure} = {
+        my $val       =  {
                  url    => $enclosure->{url},
                  type   => $enclosure->{type},
                  length => $enclosure->{length}
-            };
+        };
+        if ($XML::Feed::MULTIPLE_ENCLOSURES) {
+            push @{$entry->{entry}->{enclosure}}, $val;
+        } else {
+            $entry->{entry}->{enclosure} =  $val;
+        }
     } else {
-        return XML::Feed::Enclosure->new($entry->{entry}->{enclosure});
+        my $tmp  = $entry->{entry}->{enclosure};
+        my @encs = map { XML::Feed::Enclosure->new($_) } (ref $tmp eq 'ARRAY')? @$tmp : ($tmp);
+        return ($XML::Feed::MULTIPLE_ENCLOSURES)? @encs : $encs[-1];
     }
 }
 
