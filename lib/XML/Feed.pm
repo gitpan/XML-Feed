@@ -1,4 +1,4 @@
-# $Id: Feed.pm 150 2009-05-07 00:47:58Z swistow $
+# $Id$
 
 package XML::Feed;
 use strict;
@@ -12,7 +12,7 @@ use Module::Pluggable search_path => "XML::Feed::Format",
                       require     => 1,
                       sub_name    => 'formatters';
 
-our $VERSION = '0.43';
+our $VERSION = '0.44';
 our $MULTIPLE_ENCLOSURES = 0;
 our @formatters;
 BEGIN {

@@ -1,4 +1,4 @@
-# $Id: 04-splice-rss.t 115 2008-12-01 21:17:51Z swistow $
+# $Id$
 
 use strict;
 use Test::More tests => 3;

@@ -1,45 +1,58 @@
 ---
-name: XML-Feed
-version: 0.43
-author: []
-abstract: XML Syndication Feed Support
+abstract: 'XML Syndication Feed Support'
+author:
+  - unknown
+build_requires: {}
+configure_requires:
+  Module::Build: 0.38
+dynamic_config: 1
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.110930'
 license: perl
-resources:
-  license: http://dev.perl.org/licenses/
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: XML-Feed
+provides:
+  XML::Feed:
+    file: lib/XML/Feed.pm
+    version: 0.44
+  XML::Feed::Content:
+    file: lib/XML/Feed/Content.pm
+    version: 0
+  XML::Feed::Enclosure:
+    file: lib/XML/Feed/Enclosure.pm
+    version: 0
+  XML::Feed::Entry:
+    file: lib/XML/Feed/Entry.pm
+    version: 0
+  XML::Feed::Entry::Format::Atom:
+    file: lib/XML/Feed/Format/Atom.pm
+    version: 0
+  XML::Feed::Entry::Format::RSS:
+    file: lib/XML/Feed/Format/RSS.pm
+    version: 0
+  XML::Feed::Format::Atom:
+    file: lib/XML/Feed/Format/Atom.pm
+    version: 0
+  XML::Feed::Format::RSS:
+    file: lib/XML/Feed/Format/RSS.pm
+    version: 0
 requires:
   Class::ErrorHandler: 0
   DateTime: 0
   DateTime::Format::Mail: 0
   DateTime::Format::W3CDTF: 0
   Feed::Find: 0
+  HTML::Entities: 0
   HTML::TokeParser: 0
   LWP::UserAgent: 0
   List::Util: 0
   Module::Pluggable: 0
   Test::More: 0
   URI::Fetch: 0
-  XML::Atom: 0.32
+  XML::Atom: 0.37
   XML::LibXML: 1.66
-  XML::RSS: 1.44
-provides:
-  XML::Feed:
-    file: lib/XML/Feed.pm
-    version: 0.43
-  XML::Feed::Content:
-    file: lib/XML/Feed/Content.pm
-  XML::Feed::Enclosure:
-    file: lib/XML/Feed/Enclosure.pm
-  XML::Feed::Entry:
-    file: lib/XML/Feed/Entry.pm
-  XML::Feed::Entry::Format::Atom:
-    file: lib/XML/Feed/Format/Atom.pm
-  XML::Feed::Entry::Format::RSS:
-    file: lib/XML/Feed/Format/RSS.pm
-  XML::Feed::Format::Atom:
-    file: lib/XML/Feed/Format/Atom.pm
-  XML::Feed::Format::RSS:
-    file: lib/XML/Feed/Format/RSS.pm
-generated_by: Module::Build version 0.2808
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  XML::RSS: 1.47
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.44

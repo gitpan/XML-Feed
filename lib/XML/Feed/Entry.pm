@@ -1,4 +1,4 @@
-# $Id: Entry.pm 145 2009-04-03 15:07:25Z swistow $
+# $Id$
 
 package XML::Feed::Entry;
 use strict;
@@ -34,11 +34,16 @@ sub convert {
     my $entry = shift;
     my($format) = @_;
     my $new = __PACKAGE__->new($format);
-    for my $field (qw( title link content summary category author id issued modified lat long )) {
+    for my $field (qw( title link content summary author id issued modified lat long )) {
         my $val = $entry->$field();
         next unless defined $val;
         next if blessed $val && $val->isa('XML::Feed::Content') && ! defined $val->body;
         $new->$field($val);
+    }
+    for my $field (qw( category )) {
+        my @val = $entry->$field();
+        next unless @val;
+        $new->$field(@val);
     }
     $new;
 }

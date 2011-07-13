@@ -1,10 +1,17 @@
-# $Id: Changes 150 2009-05-07 00:47:58Z swistow $
+# $Id$
 
 Revision history for XML::Feed
 
+0.44
+    - Fix problem with HTML escaping in conversion
+      https://rt.cpan.org/Public/Bug/Display.html?id=44899
+      (Dave Cross & Shlomi Fish)
+
 0.43  
     - Add optional multi enclosure support
-
+    - Fix buglet with odd date terms
+      https://rt.cpan.org/Ticket/Display.html?id=46494
+      (Joey Hess)
 0.42
     - Fix conversion of multi value fields
       http://rt.cpan.org/Ticket/Display.html?id=41794 

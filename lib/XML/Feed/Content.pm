@@ -1,4 +1,4 @@
-# $Id: Content.pm 115 2008-12-01 21:17:51Z swistow $
+# $Id$
 
 package XML::Feed::Content;
 use strict;
