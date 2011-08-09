@@ -10,7 +10,7 @@ use File::Spec;
 {
     my $rss = XML::Feed->parse(
         File::Spec->catfile(File::Spec->curdir(), 
-            "t", "samples", "rss20-double.xml"
+            "t", "samples", "rss10-double2.xml"
         )
     );
 
@@ -35,7 +35,7 @@ use File::Spec;
 
     # TEST
     like($rss_content->body, 
-         qr{\Q<a href="http://search.cpan.org/perldoc?Dancer">Dancer</a>},
+         qr{\Q<img src="http://s.ph-cdn.com/newman/gfx/news/2011/3-neuroscienti.jpg" width="300" class="articleImage" />},
          'Contains HTML tags');
 
     unlike($rss->as_xml, qr{&amp;lt;}, 'No double encoding');
@@ -56,17 +56,14 @@ use File::Spec;
     isa_ok($atom_content, 'XML::Feed::Content');
 
     # TEST
-    TODO: {
-        local $TODO = 'Needs more investigation';
-        is($atom_content->type, 'text/html', 'Correct content type');
-    }
+    is($atom_content->type, 'text/html', 'Correct content type');
 
     # TEST
     like($atom_content->body, qr(<|&lt;), 'Contains HTML tags');
 
     # TEST
     like($atom_content->body, 
-        qr{\Q<a href="http://search.cpan.org/perldoc?Dancer">Dancer</a>},
+        qr{\Q<img src="http://s.ph-cdn.com/newman/gfx/news/2011/3-neuroscienti.jpg" width="300" class="articleImage" />},
         'Contains HTML tags');
 
     unlike($atom->as_xml, qr{&amp;lt;}, 'No double encoding');
