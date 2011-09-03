@@ -42,7 +42,7 @@
    "provides" : {
       "XML::Feed" : {
          "file" : "lib/XML/Feed.pm",
-         "version" : "0.45"
+         "version" : "0.46"
       },
       "XML::Feed::Content" : {
          "file" : "lib/XML/Feed/Content.pm",
@@ -79,5 +79,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.45"
+   "version" : "0.46"
 }
