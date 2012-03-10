@@ -6,7 +6,7 @@ build_requires: {}
 configure_requires:
   Module::Build: 0.38
 dynamic_config: 1
-generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.110930001'
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.120351'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -15,7 +15,7 @@ name: XML-Feed
 provides:
   XML::Feed:
     file: lib/XML/Feed.pm
-    version: 0.46
+    version: 0.47
   XML::Feed::Content:
     file: lib/XML/Feed/Content.pm
     version: 0
@@ -26,10 +26,10 @@ provides:
     file: lib/XML/Feed/Entry.pm
     version: 0
   XML::Feed::Entry::Format::Atom:
-    file: lib/XML/Feed/Format/Atom.pm
+    file: lib/XML/Feed/Entry/Format/Atom.pm
     version: 0
   XML::Feed::Entry::Format::RSS:
-    file: lib/XML/Feed/Format/RSS.pm
+    file: lib/XML/Feed/Entry/Format/RSS.pm
     version: 0
   XML::Feed::Format::Atom:
     file: lib/XML/Feed/Format/Atom.pm
@@ -50,9 +50,9 @@ requires:
   Module::Pluggable: 0
   Test::More: 0
   URI::Fetch: 0
-  XML::Atom: 0.37
+  XML::Atom: 0.38
   XML::LibXML: 1.66
   XML::RSS: 1.47
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.46
+version: 0.47
