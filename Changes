@@ -1,3 +1,12 @@
+2012-03-12  Dave Cross <dave@dave.org.uk>
+
+  * lib/XML/Feed.pm: Bump version for release.
+
+  * t/07-atom10-create.t: Fixed broken date test.
+
+  * lib/XML/Feed/Entry/Format/Atom.pm: Applying the missing bit of the patch
+  from https://rt.cpan.org/Ticket/Display.html?id=20763
+
 2012-03-10  Dave Cross <dave@dave.org.uk>
 
   * lib/XML/Feed.pm: Bump version number for release.
