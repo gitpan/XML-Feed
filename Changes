@@ -1,3 +1,15 @@
+2012-04-05  Dave Cross <dave@dave.org.uk>
+
+  * lib/XML/Feed.pm: Remove svn tag.
+
+  * lib/XML/Feed.pm: Changed contact details from non-working 6A email address.
+
+2012-03-28  sockmonk <wes.sheldahl@gmail.com>
+
+  * README: Updated README file with current and tested installation
+  instructions.  Hoping to clarify the confusion reflected in RT # 53884, maybe
+  even resolve it.  https://rt.cpan.org/Public/Bug/Display.html?id=53884
+
 2012-03-12  Dave Cross <dave@dave.org.uk>
 
   * lib/XML/Feed.pm: Bump version for release.
