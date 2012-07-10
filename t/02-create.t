@@ -1,7 +1,5 @@
-# $Id$
-
 use strict;
-use Test::More tests => 72;
+use Test::More;
 use XML::Feed;
 use XML::Feed::Entry;
 use XML::Feed::Content;
@@ -91,6 +89,26 @@ for my $format (qw( Atom RSS )) {
     {
         like ($feed->as_xml(), qr{\Q<link rel="self" href="http://tor.tld/my-feed.rss" type="application/atom+xml"/>\E},
             "Feed contains the atom:link");
+
+        my %rfc5005 = (
+            first_link => "http://tor.tld/my-feed.xml?page=1",
+            next_link  => "http://tor.tld/my-feed.xml?page=4",
+            previous_link  => "http://tor.tld/my-feed.xml?page=2",
+            last_link  => "http://tor.tld/my-feed.xml?page=99",
+            current_link  => "http://tor.tld/archive/2.xml",
+            prev_archive_link  => "http://tor.tld/archive/1.xml",
+            next_archive_link  => "http://tor.tld/archive/3.xml",
+        );
+
+        while ( my($name,$url) = each(%rfc5005) ) {
+            $feed->$name($url);
+            $name =~ s/_link$//;
+            $name =~ s/_/-/g; 
+            like ($feed->as_xml(), qr{\Q<link rel="$name" href="$url" type="application/atom+xml"/>\E},
+                "Feed contains an RFC 5005 rel=\"$name\" link");
+        }
     }
 
 }
+
+done_testing;

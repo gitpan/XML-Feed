@@ -2,27 +2,27 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
+  'PL_FILES' => {},
+  'INSTALLDIRS' => 'site',
   'NAME' => 'XML::Feed',
+  'EXE_FILES' => [],
   'VERSION_FROM' => 'lib/XML/Feed.pm',
   'PREREQ_PM' => {
-                   'Class::ErrorHandler' => 0,
-                   'DateTime' => 0,
-                   'DateTime::Format::Mail' => 0,
-                   'DateTime::Format::W3CDTF' => 0,
-                   'Feed::Find' => 0,
-                   'HTML::Entities' => 0,
-                   'HTML::TokeParser' => 0,
-                   'LWP::UserAgent' => 0,
-                   'List::Util' => 0,
                    'Module::Pluggable' => 0,
-                   'Test::More' => 0,
+                   'DateTime' => 0,
+                   'XML::RSS' => '1.47',
                    'URI::Fetch' => 0,
                    'XML::Atom' => '0.38',
-                   'XML::LibXML' => '1.66',
-                   'XML::RSS' => '1.47'
-                 },
-  'INSTALLDIRS' => 'site',
-  'EXE_FILES' => [],
-  'PL_FILES' => {}
+                   'DateTime::Format::Mail' => 0,
+                   'Class::ErrorHandler' => 0,
+                   'Test::More' => 0,
+                   'List::Util' => 0,
+                   'DateTime::Format::W3CDTF' => 0,
+                   'LWP::UserAgent' => 0,
+                   'HTML::TokeParser' => 0,
+                   'Feed::Find' => 0,
+                   'HTML::Entities' => 0,
+                   'XML::LibXML' => '1.66'
+                 }
 )
 ;

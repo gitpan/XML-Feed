@@ -10,7 +10,7 @@ use Module::Pluggable search_path => "XML::Feed::Format",
                       require     => 1,
                       sub_name    => 'formatters';
 
-our $VERSION = '0.49';
+our $VERSION = '0.50';
 our $MULTIPLE_ENCLOSURES = 0;
 our @formatters;
 BEGIN {
@@ -163,9 +163,19 @@ sub add_entry;
 sub entries;
 sub as_xml;
 sub id;
+sub image;
 
 sub tagline { shift->description(@_) }
 sub items   { $_[0]->entries     }
+
+# RFC 5005
+sub first_link;
+sub last_link;
+sub previous_link;
+sub next_link;
+sub current_link;
+sub prev_archive_link;
+sub next_archive_link;
 
 1;
 __END__
@@ -349,6 +359,36 @@ object in the correct format for the feed.
 
 Returns an XML representation of the feed, in the format determined by
 the current format of the I<$feed> object.
+
+=head2 $feed->first_link ([ $uri ])
+
+The Atom First-link for feed paging and archiving (RFC 5005).
+
+L<http://tools.ietf.org/html/rfc5005>
+
+=head2 $feed->last_link ([ $uri ])
+
+The Atom Last-link for feed paging and archiving.
+
+=head2 $feed->next_link ([ $uri ])
+
+The Atom Next-link for feed paging and archiving.
+
+=head2 $feed->previous_link ([ $uri ])
+
+The Atom Previous-link for feed paging and archiving.
+
+=head2 $feed->current_link ([ $uri ])
+
+The Atom Current-link for feed paging and archiving.
+
+=head2 $feed->next_archive_link ([ $uri ])
+
+The Atom Next-link for feed paging and archiving.
+
+=head2 $feed->prev_archive_link ([ $uri ])
+
+The Atom Prev-Archive-link for feed paging and archiving.
 
 =head1 PACKAGE VARIABLES
 
