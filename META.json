@@ -42,7 +42,7 @@
    "provides" : {
       "XML::Feed" : {
          "file" : "lib/XML/Feed.pm",
-         "version" : "0.50"
+         "version" : "0.51"
       },
       "XML::Feed::Content" : {
          "file" : "lib/XML/Feed/Content.pm",
@@ -77,7 +77,10 @@
    "resources" : {
       "license" : [
          "http://dev.perl.org/licenses/"
-      ]
+      ],
+      "repository" : {
+         "url" : "https://github.com/davorg/xml-feed"
+      }
    },
-   "version" : "0.50"
+   "version" : "0.51"
 }

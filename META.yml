@@ -15,7 +15,7 @@ name: XML-Feed
 provides:
   XML::Feed:
     file: lib/XML/Feed.pm
-    version: 0.50
+    version: 0.51
   XML::Feed::Content:
     file: lib/XML/Feed/Content.pm
     version: 0
@@ -55,4 +55,5 @@ requires:
   XML::RSS: 1.47
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.50
+  repository: https://github.com/davorg/xml-feed
+version: 0.51

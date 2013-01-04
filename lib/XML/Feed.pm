@@ -10,7 +10,7 @@ use Module::Pluggable search_path => "XML::Feed::Format",
                       require     => 1,
                       sub_name    => 'formatters';
 
-our $VERSION = '0.50';
+our $VERSION = '0.51';
 our $MULTIPLE_ENCLOSURES = 0;
 our @formatters;
 BEGIN {
@@ -38,6 +38,7 @@ sub parse {
     my $xml = '';
     if (UNIVERSAL::isa($stream, 'URI')) {
         my $ua  = LWP::UserAgent->new;
+        $ua->agent(__PACKAGE__ . "/$VERSION");
         $ua->env_proxy; # force allowing of proxies
         my $res = URI::Fetch->fetch($stream, UserAgent => $ua)
             or return $class->error(URI::Fetch->errstr);
